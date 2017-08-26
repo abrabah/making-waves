@@ -28,10 +28,10 @@
 <script src="animateSinusCurve.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-        const canvas = document.querySelector('#canvas');
+        const cvs = document.querySelector('#canvas');
         const ctx = canvas.getContext('2d');
-        const width = canvas.width = window.innerWidth;
-        const height = canvas.height = window.innerHeight;
+        const width = cvs.width = window.innerWidth;
+        const height = cvs.height = window.innerHeight;
         const amplitude = amp => Math.floor((height / 2) * amp);
         const wavelength = wvw => Math.floor(width * wvw);
 
