@@ -1,7 +1,7 @@
 const range = (size) => [...Array(size).keys()];
 const LUMIOSITY_VALUE = [...range(40).map(i => i + 40), ...range(40).map(i => 80 - i)];
 
-const MAX_TIME_STEP = 100;
+const MAX_TIME_STEP = Math.PI * 2;
 
 class SinusCurve {
     constructor(canvasWidth, canvasHeight, offset, wavelength, amplitude) {
@@ -22,15 +22,14 @@ class SinusCurve {
     }
 
     draw(ctx, timestep) {
-
-
-        this.HSL_L = LUMIOSITY_VALUE[Math.floor((this.offset +timestep)* 10 ) % LUMIOSITY_VALUE.length];
+        this.HSL_L = LUMIOSITY_VALUE[Math.floor((this.offset + timestep) / (MAX_TIME_STEP + this.offset) * LUMIOSITY_VALUE.length)];
+       
         ctx.strokeStyle = `hsl(${this.HSL_H}, ${this.HSL_S}%, ${this.HSL_L}%)`;
 
         ctx.beginPath();
         ctx.moveTo(0, this.height(timestep, 0));
 
-        for (let x = 0; x < (this.canvasWidth + this.wavelength); x++) {
+        for (let x = 0; x < (this.canvasWidth + this.wavelength); x+= 30) {
             ctx.lineTo(x, this.height(timestep, x / this.wavelength));
         }
         ctx.stroke();
@@ -40,6 +39,12 @@ class SinusCurve {
 
 function animateSinusCurve(timestep, speed, ctx, width, height, sineCurves) {
     ctx.clearRect(0, 0, width, height);
+
+    if (timestep > MAX_TIME_STEP) {
+        timestep -= MAX_TIME_STEP;
+    }
+
     sineCurves.forEach(sineCurve => sineCurve.draw(ctx, timestep));
-    requestAnimationFrame(animateSinusCurve.bind(null, timestep > MAX_TIME_STEP ? 0 : timestep + speed, speed, ctx, width, height, sineCurves));
+
+    requestAnimationFrame(animateSinusCurve.bind(null, timestep + speed, speed, ctx, width, height, sineCurves));
 };
